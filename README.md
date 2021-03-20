@@ -14,7 +14,7 @@ It was 1996 when I bought a Genius Speed Wheel Formula. Back then, I used the DB
 
 ![The speed wheel](./images/01%20speed%20wheel.jpg)
 
-Some months ago I found my old speed wheel laying into a box and I thought that probably I could do something with it. After some thinking and research I decided that the best thing I could do is to use the hardware (mainly the buttons) and addapt the circuits from their analog version to a digital one. First I choose Arduino as the microcontroller to use to take control of the new digital input, but few weeks later the Raspberry Pi foundation released the Pico 2040 and I decided to swith my prototype to the Pico because:
+Some months ago I found my old speed wheel laying into a box and I thought that probably I could do something with it. After some thinking and research I decided that the best thing I could do is to use the hardware (mainly the buttons) and adapt the circuits from their analog version to a digital one. First I choose Arduino as the micro controller to use to take control of the new digital input, but few weeks later the Raspberry Pi foundation released the Pico 2040 and I decided to switch my prototype to the Pico because:
 
 - Can be programmed in Python (I'm more skilled in Python than in C)
 - Using CircuitPython, the Pico can be seen by the Pc as a GamePad. This is key, since it simplyfies terribly the setup: plug and play :-)
@@ -41,7 +41,7 @@ After looking closely to the circuit, I removed with a solder the transistors an
 
 ![Wheel buttons](images/05%20original%20circuit.jpg)
 
-For the connection of the cables to the Pico I reused the previous Dupont connectors. It is imporant to keep track of what cable (color) goes to which GPIO.
+For the connection of the cables to the Pico I reused the previous Dupont connectors. It is important to keep track of what cable (color) goes to which GPIO.
 
 ![Connections to the Pico](images/06%20Pico%20connections.jpg)
 
@@ -51,11 +51,11 @@ The part I feel less proud of is the connection of all the Vcc cables (some duck
 
 ## The code
 
-For the software development I decided to go with VS Code and the [Circuit Python extension](https://marketplace.visualstudio.com/items?itemName=joedevivo.vscode-circuitpython) that simplyfies the process of deploying [Circuit Python](https://circuitpython.readthedocs.io/en/latest/docs/index.html) into the [Pico](https://www.raspberrypi.org/products/raspberry-pi-pico/). The setup is simple: USB cable from the Pico to your computer, that is detected as a USB drive. I could develop both in the computer or directly into the Pico.
+For the software development I decided to go with VS Code and the [Circuit Python extension](https://marketplace.visualstudio.com/items?itemName=joedevivo.vscode-circuitpython) that simplifies the process of deploying [Circuit Python](https://circuitpython.readthedocs.io/en/latest/docs/index.html) into the [Pico](https://www.raspberrypi.org/products/raspberry-pi-pico/). The setup is simple: USB cable from the Pico to your computer, that is detected as a USB drive. I could develop both in the computer or directly into the Pico.
 
 You can find the current stable version of the software in the [code.py](code.py) file. For using this with your own wheel you **will need to calibrate the values of the potentiometers**. Make use of the `calibrate_analog_input` function to find the maximum and minimum values. You need to change the code with this new values for having the wheel behave correctly.
 
-I'm planning to incorporate a [Kalman filter](https://en.wikipedia.org/wiki/Kalman_filter) for smothing the wheel and lever output.
+I'm planning to incorporate a [Kalman filter](https://en.wikipedia.org/wiki/Kalman_filter) for smoothing the wheel and lever output.
 
 Once the code is running in the Pico the wheel is already detected as an input device by the computer. You can install and run [Super TuxKart](https://supertuxkart.net/Main_Page), configure the Speed Wheel as input device, and have fun!
 
