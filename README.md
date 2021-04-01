@@ -1,6 +1,6 @@
 # The Pico Speed Wheel
 
-This is a short story about how I used a Raspberry Pi Pico for "resurrecting" a 1996 Speed Wheel DB15 GamePad, including the code to bring to a new life your own Speed Wheel. You can also find this project in [Make:Projects](https://makeprojects.com/project/reuse-your-old-db15-gamepad-thanks-to-a-raspberry-pi-pico)
+This is a short story about how I used a Raspberry Pi Pico for "resurrecting" a 1996 Speed Wheel DB15 GamePad, including the code to bring to a new life your own Speed Wheel. You can also find this project in [Make:Projects](https://makeprojects.com/project/reuse-your-old-db15-gamepad-thanks-to-a-raspberry-pi-pico) and see the [Speed Wheel in action](https://youtu.be/gwAEzs_7QYg)
 
 - [The Pico Speed Wheel](#the-pico-speed-wheel)
   - [The Speed Wheel](#the-speed-wheel)
