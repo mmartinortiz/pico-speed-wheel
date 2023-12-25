@@ -1,0 +1,9 @@
+{
+  "packages": ["python@3.12", "poetry@latest", "thonny@latest", "ruff@latest"],
+  "shell": {
+    "init_hook": ["poetry shell"],
+    "scripts": {
+      "test": ["echo \"Error: no test specified\" && exit 1"]
+    }
+  }
+}
