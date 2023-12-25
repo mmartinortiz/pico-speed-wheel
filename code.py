@@ -1,12 +1,12 @@
 """
-Adafruit CircuitPython 6.2.0-beta.2
+Adafruit CircuitPython 8.2.9
 Raspberry Pi Pico with rp2040
 """
 import time
 
 import board
 import usb_hid
-from adafruit_hid.gamepad import Gamepad
+from hid_gamepad import Gamepad
 from analogio import AnalogIn
 from digitalio import DigitalInOut, Direction, Pull
 
