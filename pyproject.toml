@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "pico-speed-wheel"
+version = "0.1.0"
+description = "Recycle an old analog Speed Wheel into a digital gamepad"
+authors = ["Manuel Martin-Ortiz <mmartinortiz@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+circup = "^1.5.2"
+types-circuitpython = "^8.1.0"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.1.9"
+pre-commit = "^3.6.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -32,7 +32,6 @@ The speed wheel in mainly 2 potentiometers and 10 buttons:
 
 My model also includes two gas pedals for breaking and accelerating. For starting, I did not include them, but are easy to integrate since all the wiring is there and it is just 2 more potentiometers.
 
-
 The DB15 connector does not have cables available for all the buttons: it shares wires for the 2 buttons, changing the current by the means of transistors. With the Pico, and all the digital inputs that it provides, we do not need the transistors anymore.
 
 ![Gear lever buttons](images/04%20original%20circuit.jpg)
@@ -51,7 +50,7 @@ The part I feel less proud of is the connection of all the Vcc cables (some duct
 
 ## The code
 
-For the software development I decided to go with VS Code and the [Circuit Python extension](https://marketplace.visualstudio.com/items?itemName=joedevivo.vscode-circuitpython) that simplifies the process of deploying [Circuit Python](https://circuitpython.readthedocs.io/en/latest/docs/index.html) into the [Pico](https://www.raspberrypi.org/products/raspberry-pi-pico/). The setup is simple: USB cable from the Pico to your computer, that is detected as a USB drive. I could develop both in the computer or directly into the Pico.
+For the software development I decided to go with VS Code and the [Circuit Python extension](https://marketplace.visualstudio.com/items?itemName=joedevivo.vscode-circuitpython) that simplifies the process of deploying [Circuit Python](https://circuitpython.readthedocs.io/en/latest/docs/index.html) into the [Pico](https://www.raspberrypi.org/products/raspberry-pi-pico/). The setup is simple: USB cable from the Pico to your computer, that is detected as a USB drive. I could develop both in the computer or directly into the Pico. For managing the project dependencies, there is a [devbox](https://github.com/jetpack-io/devbox) configuration file. A `devbox shell` will setup everything needed for development.
 
 You can find the current stable version of the software in the [code.py](code.py) file. For using this with your own wheel you **will need to calibrate the values of the potentiometers**. Make use of the `calibrate_analog_input` function to find the maximum and minimum values. You need to change the code with this new values for having the wheel behave correctly.
 
