@@ -142,32 +142,26 @@ for _, button in buttons.items():
 print("Setup finished")
 
 
-# Set the known minimum and maximum value
-steering_min_value = 3520
-steering_max_value = 61712
+steering = rs.Slicer(
+    in_min=3520,
+    in_max=61712,
+    out_min=-127,
+    out_max=127,
+    out_slice=1,
+    hyst_factor=0.1,
+    out_integer=True,
+)
 
-gear_min_value = 18428
-gear_max_value = 58742
+gear = rs.Slicer(
+    in_min=18428,
+    in_max=58742,
+    out_min=-127,
+    out_max=127,
+    out_slice=1,
+    hyst_factor=0.1,
+    out_integer=True,
+)
 
-
-def new_slicer(min_value, max_value):
-    print("Slicer recreated")
-    return rs.Slicer(
-        in_min=min_value,
-        in_max=max_value,
-        out_min=-127,
-        out_max=127,
-        out_slice=1,
-        hyst_factor=0.1,
-        out_integer=True,
-    )
-
-
-steering = new_slicer(min_value=steering_min_value, max_value=steering_max_value)
-steering_needs_update = False
-
-gear = new_slicer(min_value=gear_min_value, max_value=gear_max_value)
-gear_needs_update = False
 
 debug = False
 
@@ -175,12 +169,14 @@ while True:
     for idx, button in buttons.items():
         if not button["device"].value and button["pressed"]:
             button["pressed"] = False
-            print(f"Button {idx} Released!")
+            if debug:
+                print(f"Button {idx} Released!")
             gp.release_buttons(idx)
 
         if button["device"].value and not button["pressed"]:
             button["pressed"] = True
-            print(f"Button {idx} pressed!")
+            if debug:
+                print(f"Button {idx} pressed!")
             gp.press_buttons(idx)
 
     steering_wheel_value = steering_wheel.value
@@ -189,36 +185,7 @@ while True:
     wheel_position = steering.range_slicer(steering_wheel_value)[0]
     gear_position = gear.range_slicer(gear_value)[0]
 
-    # Update max and min values
-    if steering_wheel_value > steering_max_value:
-        steering_max_value = steering_wheel_value
-        steering_needs_update = True
-
-    if steering_wheel_value < steering_min_value:
-        steering_min_value = steering_wheel_value
-        steering_needs_update = True
-
-    if gear_value > gear_max_value:
-        gear_max_value = gear_value
-        gear_needs_update = True
-
-    if gear_value < gear_min_value:
-        gear_min_value = gear_value
-        gear_needs_update = True
-
-    if steering_needs_update:
-        steering = new_slicer(
-            min_value=steering_min_value, max_value=steering_max_value
-        )
-        steering_needs_update = False
-
-    if gear_needs_update:
-        gear = new_slicer(min_value=gear_min_value, max_value=gear_max_value)
-        gear_needs_update = False
-
     gp.move_joysticks(x=wheel_position, y=gear_position)
 
     if debug:
-        print(f"Wheel max: {steering_max_value} Wheel min {steering_min_value}")
-        print(f"Gear max: {gear_max_value} Gear min {gear_min_value}")
         print(f"wheel: {wheel_position} gear: {gear_position}")
