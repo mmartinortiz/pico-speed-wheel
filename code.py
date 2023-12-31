@@ -1,57 +1,15 @@
 """
-Adafruit CircuitPython 6.2.0-beta.2
+Adafruit CircuitPython 8.2.9
 Raspberry Pi Pico with rp2040
 """
 import time
 
 import board
 import usb_hid
-from adafruit_hid.gamepad import Gamepad
+from hid_gamepad import Gamepad
 from analogio import AnalogIn
 from digitalio import DigitalInOut, Direction, Pull
-
-led = DigitalInOut(board.LED)
-led.direction = Direction.OUTPUT
-led.value = True
-
-print("Initializing the gamepad")
-# Create a gamepad for HID simulation
-gp = Gamepad(usb_hid.devices)
-
-# Other pins can also be set to output
-# for detecting buttons.
-out = DigitalInOut(board.GP16)
-out.direction = Direction.OUTPUT
-out.value = True
-
-buttons = {
-    i + 1: {"device": DigitalInOut(device), "pressed": False}
-    for i, device in enumerate(
-        [
-            # Buttons in the steering wheel, from 1 to 6
-            board.GP4,
-            board.GP9,
-            board.GP2,
-            board.GP3,
-            board.GP6,
-            board.GP5,
-            # Buttons in the gear lever, from 7 to 10
-            board.GP11,
-            board.GP13,
-            board.GP12,
-            board.GP7,
-        ],
-    )
-}
-
-steering_wheel = AnalogIn(board.A0)
-gear_lever = AnalogIn(board.A1)
-
-for _, button in buttons.items():
-    button["device"].direction = Direction.INPUT
-    button["device"].pull = Pull.DOWN
-
-print("Setup finished")
+import cedargrove_rangeslicer as rs
 
 
 def calibrate_analog_input(device: AnalogIn) -> None:
@@ -116,7 +74,7 @@ def get_gear_position(device: AnalogIn) -> int:
     Returns:
         int: Value between -127 and 127
     """
-    return scale_voltage(device.value, min_voltage=16720, max_voltage=50016)
+    return scale_voltage(device.value, min_voltage=17428, max_voltage=59742)
 
 
 def get_wheel_position(device: AnalogIn) -> int:
@@ -132,19 +90,102 @@ def get_wheel_position(device: AnalogIn) -> int:
 
 
 # calibrate_analog_input(steering_wheel)
+# calibrate_analog_input(gear_lever)
+
+
+"""Establish range_slicer instances, one for each analog potentiometer
+input. Input ranges are adjusted for unique potentiometer inaccuracies and
+noise. Slice size divides the output into 10 slices. Hysteresis factor is
+25% of a slice."""
+
+led = DigitalInOut(board.LED)
+led.direction = Direction.OUTPUT
+led.value = True
+
+print("Initializing the gamepad")
+# Create a gamepad for HID simulation
+gp = Gamepad(usb_hid.devices)
+
+# Other pins can also be set to output
+# for detecting buttons.
+out = DigitalInOut(board.GP16)
+out.direction = Direction.OUTPUT
+out.value = True
+
+buttons = {
+    i + 1: {"device": DigitalInOut(device), "pressed": False}
+    for i, device in enumerate(
+        [
+            # Buttons in the steering wheel, from 1 to 6
+            board.GP4,
+            board.GP9,
+            board.GP2,
+            board.GP3,
+            board.GP6,
+            board.GP5,
+            # Buttons in the gear lever, from 7 to 10
+            board.GP11,
+            board.GP13,
+            board.GP12,
+            board.GP7,
+        ],
+    )
+}
+
+steering_wheel = AnalogIn(board.A0)
+gear_lever = AnalogIn(board.A1)
+
+for _, button in buttons.items():
+    button["device"].direction = Direction.INPUT
+    button["device"].pull = Pull.DOWN
+
+print("Setup finished")
+
+
+steering = rs.Slicer(
+    in_min=3520,
+    in_max=61712,
+    out_min=-127,
+    out_max=127,
+    out_slice=1,
+    hyst_factor=0.1,
+    out_integer=True,
+)
+
+gear = rs.Slicer(
+    in_min=18428,
+    in_max=58742,
+    out_min=-127,
+    out_max=127,
+    out_slice=1,
+    hyst_factor=0.1,
+    out_integer=True,
+)
+
+
+debug = False
+
 while True:
     for idx, button in buttons.items():
         if not button["device"].value and button["pressed"]:
             button["pressed"] = False
-            print(f"Button {idx} Released!")
+            if debug:
+                print(f"Button {idx} Released!")
             gp.release_buttons(idx)
 
         if button["device"].value and not button["pressed"]:
             button["pressed"] = True
-            print(f"Button {idx} pressed!")
+            if debug:
+                print(f"Button {idx} pressed!")
             gp.press_buttons(idx)
 
-    gear_position = get_gear_position(gear_lever)
-    wheel_position = get_wheel_position(steering_wheel)
+    steering_wheel_value = steering_wheel.value
+    gear_value = gear_lever.value
+
+    wheel_position = steering.range_slicer(steering_wheel_value)[0]
+    gear_position = gear.range_slicer(gear_value)[0]
 
     gp.move_joysticks(x=wheel_position, y=gear_position)
+
+    if debug:
+        print(f"wheel: {wheel_position} gear: {gear_position}")
